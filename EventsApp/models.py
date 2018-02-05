@@ -10,7 +10,7 @@ from django.forms import ModelForm
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=150, blank=False, null=False)
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
 class EventType(models.Model):

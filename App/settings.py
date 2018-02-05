@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'bootstrap_datepicker',
+    'rest_framework',
     'EventsApp',
 ]
 

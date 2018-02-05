@@ -13,9 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 import EventsApp.views
+
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'category', EventsApp.views.CategoryViewSet, base_name="category")
+router.register(r'eventType', EventsApp.views.EventTypeViewSet, base_name="eventType")
+router.register(r'event', EventsApp.views.EventViewSet, base_name="event")
 
 urlpatterns = [
     url(r'^login/$', EventsApp.views.login_view, name='login'),
@@ -23,5 +30,7 @@ urlpatterns = [
     url(r'^$', EventsApp.views.index , name='index'),
     url(r'^add/$', EventsApp.views.registro, name='addUser'),
     url(r'^createEvent/$', EventsApp.views.createEvent, name='event'),
+    url(r'^getCategories/$', EventsApp.views.getCategories, name='event'),
+    url(r'^api/', include(router.urls, namespace="api")),
     url(r'^admin/', admin.site.urls),
 ]

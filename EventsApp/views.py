@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 from models import *
 from django.shortcuts import render
-
+import json
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 
 from django.http import JsonResponse
@@ -15,6 +17,14 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django import forms
 
+from serializers import *
+from rest_framework import generics, viewsets
+from rest_framework import permissions
+from rest_framework import mixins
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 # Create your views here.
 
 def index(request):
@@ -96,3 +106,32 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+@csrf_exempt
+def getCategories(request):
+    if request.method == 'GET':
+        categories = Category.objects.all()
+        print categories
+        return JsonResponse({'message': 'Done','data':categories})
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Products to be viewed or edited.
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class EventTypeViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Products to be viewed or edited.
+    """
+    queryset = EventType.objects.all()
+    serializer_class = EventTypeSerializer
+
+class EventViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Products to be viewed or edited.
+    """
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
