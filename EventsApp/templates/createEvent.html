@@ -1,0 +1,45 @@
+{# Load the tag library #}
+{% load bootstrap3 %}
+{% load static %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1 %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+  </head>
+
+  <body>
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 col-sm-offset-3">
+            <div class="page-header">
+                <h2>Registrar Evento</h2>
+            </div>
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_field form.name %}
+            {% bootstrap_field form.category %}
+            {% bootstrap_field form.place %}
+            {% bootstrap_field form.initialDate  %} formato de fecha 'mm/dd/yyyy'
+            {% bootstrap_field form.finalDate %} formato de fecha 'mm/dd/yyyy'
+            {% bootstrap_field form.eventType %}
+            {% buttons %}
+                <input type="submit" value="Guardar" class="btn btn-primary"/>
+                <a href="../" class="btn btn-primary">Cancelar</a>
+            {% endbuttons %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+  </body>
+
+</html>
