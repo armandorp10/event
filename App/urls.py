@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^add/$', EventsApp.views.registro, name='addUser'),
     url(r'^createEvent/$', EventsApp.views.createEvent, name='event'),
     url(r'^getCategories/$', EventsApp.views.getCategories, name='event'),
+    url(r'^addEvent/$', EventsApp.views.addEvent, name='addEvent'),
     url(r'^api/', include(router.urls, namespace="api")),
     url(r'^admin/', admin.site.urls),
 ]

@@ -28,7 +28,7 @@
                   <div class="form-group">
                     <label class="col-sm-4 control-label">Email</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" placeholder="Evento">
+                        <input id="event" type="text" class="form-control" placeholder="Evento">
                     </div>
                   </div>
                   <div class="form-group">
@@ -42,20 +42,20 @@
                   <div class="form-group">
                     <label class="col-sm-4 control-label">Lugar</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" placeholder="Lugar">
+                        <input id="place" type="text" class="form-control" placeholder="Lugar">
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-4 control-label">Fecha inicial</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control" placeholder="Fecha inicial">
+                        <input id="initDate" type="date" class="form-control" placeholder="Fecha inicial">
                     </div>
                   </div>
 
                 <div class="form-group">
                     <label class="col-sm-4 control-label">Fecha final</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control" placeholder="Fecha inicial">
+                        <input id="endDate" type="date" class="form-control" placeholder="Fecha final">
                     </div>
                   </div>
 
@@ -68,7 +68,7 @@
                     </div>
                 </div>
 
-                <input type="submit" value="Guardar" class="btn btn-primary"/>
+                <input id="save" type="submit" value="Guardar" class="btn btn-primary"/>
                 <a href="../" class="btn btn-primary">Cancelar</a>
             </form>
 
@@ -76,14 +76,15 @@
     </div>
     <script>
         $( document ).ready(function() {
-            var url = window.location.origin + "/api/";
+            var url1 = window.location.origin + "/api/";
+            var url2 = window.location.origin + "/";
             var  _doAjax = function (sType, uri, data, fnSuccess, fnError, _async) {
                  if (!data) data = {};
                  if (!fnError) fnError = this._defaultErrorHandler;
                  if (!_async) _async = true;
                  $.ajax({
                      type: sType,
-                     url: url + uri,
+                     url: uri,
                      data: data,
                      async: _async,
                      contentType: "application/json; charset=utf-8",
@@ -94,8 +95,8 @@
             };
 
             var getAllCategory = function () {
-                _doAjax("GET", "category/" ,{},function (resp) {
-                    console.log(resp);
+                _doAjax("GET", url1 + "category/" ,{},function (resp) {
+                    //console.log(resp);
                     var options = $("#category");
                     $.each(resp, function() {
                         options.append($("<option />").val(this.id).text(this.name));
@@ -103,8 +104,8 @@
                 },null,true);
             };
             var getAllEventType = function () {
-                _doAjax("GET", "eventType/" ,{},function (resp) {
-                    console.log(resp);
+                _doAjax("GET", url1 + "eventType/" ,{},function (resp) {
+                    //console.log(resp);
                     var options = $("#eventType");
                     $.each(resp, function() {
                         options.append($("<option />").val(this.id).text(this.name));
@@ -114,6 +115,49 @@
             getAllCategory();
             getAllEventType();
             //alert("Hola");
+            var getDate = function (stringDate) {
+                if(stringDate){
+                    var from = stringDate.split("-");
+                    return new Date(from[0], from[1] - 1, from[2]);
+                }
+                return stringDate;
+            };
+            var getEvent = function () {
+                var obj = {} ;
+                obj.event = $('#event').val();
+                obj.place = $('#place').val();
+                obj.initialDate = $('#initDate').val();
+                obj.finalDate = $('#endDate').val();
+                obj.category = $('#category').val();
+                obj.eventType = $('#eventType').val();
+                //console.log(obj)
+                return obj;
+            };
+
+            var validateFields =  function (event) {
+                if(    !event.event       || !event.place
+                    || !event.initialDate || !event.finalDate
+                    || !event.category    || !event.eventType ){
+                    return false;
+                    alert("Complete todos los campos!");
+                }
+                return true;
+            };
+
+            var addEvent = function () {
+                var event = getEvent();
+                console.log( JSON.stringify( event));
+                if(validateFields(event)){
+                    _doAjax("POST", url2 + "addEvent/" , JSON.stringify(event) ,function (resp) {
+                        console.log(resp);
+                    },function (err) {
+                        console.log("err", err);
+                    },true);
+                }
+            };
+            $( "#save" ).click(function() {
+                addEvent();
+            });
         });
     </script>
   </body>

@@ -25,6 +25,10 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+
+import time
+import datetime
+from time import strftime, gmtime
 # Create your views here.
 
 def index(request):
@@ -113,6 +117,26 @@ def getCategories(request):
         categories = Category.objects.all()
         print categories
         return JsonResponse({'message': 'Done','data':categories})
+
+@csrf_exempt
+def addEvent(request):
+    if request.method == 'POST':
+        jsonEvent = json.loads(request.body)
+        print jsonEvent
+        print strftime("%Y-%m-%d", gmtime())
+        category = Category.objects.get(id=jsonEvent['category'])
+        eventType = EventType.objects.get(id=jsonEvent['eventType'])
+
+        event = Event()
+        event.place = jsonEvent['place']
+        event.name = jsonEvent['event']
+        event.category = category
+        event.eventType = eventType
+        event.finalDate = strftime("%Y-%m-%d", gmtime())
+        event.initialDate = strftime("%Y-%m-%d", gmtime())
+        event.user = request.user
+        event.save()
+        return HttpResponse('{"Success": true,"message":"Evento agregado"}')
 
 class CategoryViewSet(viewsets.ModelViewSet):
     """
